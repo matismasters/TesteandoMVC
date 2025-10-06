@@ -22,6 +22,11 @@ namespace TesteandoMVC.Tests
             // Arrange
             var mockService = new Mock<ISimpleService>();
             mockService.Setup(x => x.HoraEsPar()).Returns(true);
+            
+            // EJEMPLO: Si el método recibiera parámetros, el mock se haría así:
+            // mockService.Setup(x => x.ValidarUsuario("usuario", "password")).Returns(true);
+            // mockService.Setup(x => x.ValidarUsuario(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
+            // mockService.Setup(x => x.ValidarUsuario(It.Is<string>(u => u == "don_correcto"), It.Is<string>(p => p == "iatusabes"))).Returns(true);
 
             var client = _factory.WithWebHostBuilder(builder =>
             {

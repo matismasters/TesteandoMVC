@@ -27,6 +27,30 @@ public class HomeController : Controller
         return View();
     }
 
+    public IActionResult NumeroAleatorio()
+    {
+        ViewBag.NumeroAleatorio = _simpleService.NumeroAleatorio();
+        return View();
+    }
+
+    public IActionResult Login()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public IActionResult ValidarLogin(string usuario, string password)
+    {
+        bool esValido = _simpleService.ValidarUsuario(usuario, password);
+        
+        ViewBag.EsValido = esValido;
+        ViewBag.Mensaje = esValido ? 
+            "¡Bienvenido! Has iniciado sesión correctamente." : 
+            "Usuario o contraseña incorrectos. Intenta de nuevo.";
+        
+        return View("Login");
+    }
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

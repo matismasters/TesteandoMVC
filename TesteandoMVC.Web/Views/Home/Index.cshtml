@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    @if (ViewBag.ShowMessage == true)
+    {
+        <h1 class="display-4 text-success">¡El servicio funciona correctamente!</h1>
+    }
+    else
+    {
+        <h1 class="display-4 text-danger">¡El servicio no está funcionando!</h1>
+    }
+    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System.Net;
+using System.Text;
 using TesteandoMVC.Web.Services;
 using Xunit;
 
@@ -24,7 +25,7 @@ namespace TesteandoMVC.Tests
             mockService.Setup(x => x.HoraEsPar()).Returns(true);
             
             // EJEMPLO: Si el método recibiera parámetros, el mock se haría así:
-            // mockService.Setup(x => x.ValidarUsuario("usuario", "password")).Returns(true);
+            // mockService.Setup(x => x.ValidarUsuario("pepitro", "juansito")).Returns(true);
             // mockService.Setup(x => x.ValidarUsuario(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
             // mockService.Setup(x => x.ValidarUsuario(It.Is<string>(u => u == "don_correcto"), It.Is<string>(p => p == "iatusabes"))).Returns(true);
 
@@ -38,6 +39,14 @@ namespace TesteandoMVC.Tests
 
             // Act
             var response = await client.GetAsync("/");
+            // Alternativamente, si el método fuera POST
+            // var response = await client.PostAsync("/", null);
+            // O si el método fuera POST con parámetros
+            // Para APIs que esperan JSON
+            // string json = "{\"usuario\":\"don_correcto\",\"password\":\"iatusabes\"}";
+            // StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+            // HttpResponseMessage response = await client.PostAsync("/api/login", content);
+
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);

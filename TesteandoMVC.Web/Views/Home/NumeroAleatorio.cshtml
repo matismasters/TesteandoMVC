@@ -2,10 +2,10 @@
     ViewData["Title"] = "Número Aleatorio";
 }
 
-<div class="text-center">
+<div class="text-center" id="MensajeNumeroSuerte">
     <h1 class="display-4">Número Aleatorio</h1>
     <div class="alert alert-info">
-        <h2>Tu número de la suerte es: @ViewBag.NumeroAleatorio</h2>
+        <h2>Tu número de la suerte es: <span id="numero_aleatorio">@ViewBag.NumeroAleatorio</span></h2>
     </div>
     <p><a href="/" class="btn btn-primary">Volver al Inicio</a></p>
 </div>

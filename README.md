@@ -55,6 +55,18 @@ TesteandoMVC/
 ### 4. **Página de Privacidad**
 - **Funcionalidad**: Página estática de información de privacidad
 
+### 5. **🧪 Demo de Test Doubles (SIMPLIFICADO)**
+- **Funcionalidad**: Endpoint simple que demuestra los 5 tipos de Test Doubles  
+- **Ubicación**: `/Home/TestDoubles`
+- **Un solo servicio**: `ITestDoublesService` con métodos específicos para cada tipo
+- **Características**:
+  - **DUMMY**: Logger pasado pero no usado
+  - **STUB**: Descuentos con valores predefinidos  
+  - **FAKE**: Almacenamiento simple en memoria
+  - **MOCK**: Notificaciones para verificar llamadas
+  - **SPY**: Validación con logs inspeccionables
+- **Interfaz simple**: Una sola vista que muestra todos los resultados
+
 ## 🔧 Tecnologías y Arquitectura
 
 ### **Framework y Versión**
@@ -71,6 +83,10 @@ TesteandoMVC/
   - `NumeroAleatorio()`: Generador de números aleatorios
   - `Login()`: Muestra formulario de login
   - `ValidarLogin(string usuario, string password)`: Procesa login por POST
+  - **`TestDoubles(string input)`**: 🧪 **Demo Simple de Test Doubles**
+    - Un solo endpoint que usa todos los tipos de Test Doubles
+    - Recibe un parámetro de texto para demostración
+    - Muestra resultados de DUMMY, STUB, FAKE, MOCK y SPY
   - `Error()`: Manejo de errores
 
 #### **Models (Modelos)**
@@ -82,11 +98,22 @@ TesteandoMVC/
 - **Vistas específicas** para cada acción del controlador
 
 #### **Services (Servicios)**
+
+##### **Servicios Originales**
 - **`ISimpleService`** (Interface): Define el contrato del servicio
 - **`SimpleService`** (Implementación): Contiene la lógica de negocio
   - `HoraEsPar()`: Determina si la hora actual es par
   - `NumeroAleatorio()`: Genera número aleatorio 1-100
   - `ValidarUsuario(usuario, password)`: Valida credenciales
+
+##### **🧪 Servicio Simple para Demo de Test Doubles**
+- **`ITestDoublesService` / `TestDoublesService`**: 
+  - **Un solo servicio** que demuestra todos los tipos de Test Doubles
+  - `ProcesarTexto(logger, texto)`: **DUMMY** - Logger se pasa pero no se usa
+  - `CalcularDescuento(tipo)`: **STUB** - Retorna valores predefinidos
+  - `GuardarDato/ObtenerDato`: **FAKE** - Implementación real en memoria
+  - `EnviarNotificacion(mensaje)`: **MOCK** - Para verificar llamadas en tests
+  - `ValidarYProcesar(input)`: **SPY** - Con logs que se inspeccionan en tests
 
 ### **Inyección de Dependencias**
 - Configurada en `Program.cs` con `builder.Services.AddScoped<ISimpleService, SimpleService>()`
@@ -156,6 +183,12 @@ public async Task Index_CuandoElServicioDevuelveTrue_MuestraMensajeDeExito()
 - ✅ **Testing unitario** con mocking de servicios
 - ✅ **Testing de comportamiento** según estado del servicio
 - ✅ **Ejemplos de mocking** para diferentes escenarios
+- ✅ **🧪 Demo completo de Test Doubles**: 
+  - **DUMMY Objects**: Objetos pasados pero no usados
+  - **STUB**: Servicios que retornan valores predefinidos
+  - **FAKE**: Implementaciones reales pero simplificadas
+  - **MOCK**: Verificación de llamadas y parámetros
+  - **SPY**: Inspección detallada de interacciones y secuencias
 
 ## 🚀 Cómo Ejecutar el Proyecto
 
@@ -245,6 +278,84 @@ dotnet test --collect:"XPlat Code Coverage"
 - `ViewBag.NumeroAleatorio`: Pasa el número generado a la vista
 - `ViewBag.EsValido` y `ViewBag.Mensaje`: Manejo de resultados de login
 
+## 🧪 Demo de Test Doubles - Solución Simplificada
+
+### **¿Por qué esta solución es mejor?**
+- ✅ **Un solo servicio** en lugar de múltiples interfaces complejas
+- ✅ **Una sola acción** del controlador en lugar de flujo complejo
+- ✅ **Vista simple** que muestra resultados directos
+- ✅ **Tests claros** que demuestran cada concepto por separado
+- ✅ **Fácil de entender** para estudiantes
+
+### **¿Cómo funciona?**
+
+#### **El Servicio `ITestDoublesService`**
+```csharp
+public interface ITestDoublesService
+{
+    string ProcesarTexto(ILogger logger, string texto);     // DUMMY
+    decimal CalcularDescuento(string tipo);                // STUB  
+    void GuardarDato(string key, string value);            // FAKE
+    string ObtenerDato(string key);                        // FAKE
+    void EnviarNotificacion(string mensaje);               // MOCK
+    bool ValidarYProcesar(string input);                   // SPY
+}
+```
+
+#### **El Controlador Simple**
+```csharp
+public IActionResult TestDoubles(string input = "demo")
+{
+    var resultado = new
+    {
+        TextoProcesado = _testDoublesService.ProcesarTexto(_logger, input),  // DUMMY
+        DescuentoVIP = _testDoublesService.CalcularDescuento("VIP"),         // STUB
+        DatoGuardado = GuardarYObtenerDato(input),                          // FAKE
+        ValidacionExitosa = _testDoublesService.ValidarYProcesar(input)      // SPY
+    };
+    
+    _testDoublesService.EnviarNotificacion($"Demo ejecutado: {input}");     // MOCK
+    
+    ViewBag.Resultado = resultado;
+    return View();
+}
+```
+
+#### **Los Tests Simples**
+Cada tipo de Test Double tiene su propio test claro:
+
+```csharp
+[Fact] 
+public void DUMMY_ProcesarTexto_LoggerNoSeUsa() 
+{
+    var dummyLogger = new Mock<ILogger>().Object;  // DUMMY - no verificamos
+    var resultado = service.ProcesarTexto(dummyLogger, "hola");
+    resultado.Should().Be("HOLA");
+}
+
+[Fact]
+public void STUB_CalcularDescuento_RetornaValoresPredefinidos()
+{
+    var stubService = new Mock<ITestDoublesService>();
+    stubService.Setup(x => x.CalcularDescuento("VIP")).Returns(0.20m);  // STUB
+}
+
+[Fact] 
+public void MOCK_EnviarNotificacion_VerificaLlamada()
+{
+    var mockService = new Mock<ITestDoublesService>();
+    mockService.Object.EnviarNotificacion("test");
+    mockService.Verify(x => x.EnviarNotificacion("test"), Times.Once);  // MOCK
+}
+```
+
+### **Ventajas Educativas**
+- 🎯 **Cada concepto es claro** - Un método = Un tipo de Test Double
+- 📚 **Progresión lógica** - De DUMMY (más simple) a SPY (más complejo)  
+- 🔧 **Fácil de modificar** - Los estudiantes pueden experimentar
+- 📖 **Tests legibles** - Cada test demuestra un solo concepto
+- ⚡ **Rápido de entender** - No hay lógica de negocio compleja que distraiga
+
 ## 🔍 Detalles de Implementación Interesantes
 
 ### **SimpleService - Lógica de Negocio**
@@ -269,12 +380,15 @@ public bool ValidarUsuario(string usuario, string password)
 
 ## 📝 Posibles Mejoras y Extensiones
 
-### **Funcionalidades**
+### **Posibles Mejoras y Extensiones**
 - [ ] Autenticación real con JWT o Cookies
 - [ ] Base de datos para persistencia
 - [ ] API REST endpoints
 - [ ] Logging estructurado con Serilog
 - [ ] Validación de modelos con Data Annotations
+- [ ] **🧪 Más Test Doubles**: Agregar ejemplos de combinaciones complejas
+- [ ] **Tests parametrizados**: Usar Theory/InlineData para más casos
+- [ ] **Performance tests**: Comparar rendimiento con/sin mocks
 
 ### **Testing**
 - [ ] Tests de UI con Selenium
@@ -295,6 +409,9 @@ Este proyecto sirve como **ejemplo educativo** para:
 - **Desarrolladores** nuevos en testing con .NET
 - **Demostraciones** de buenas prácticas de desarrollo
 - **Base** para proyectos más complejos
+- **🧪 Enseñanza de Test Doubles**: Material completo para clases de programación
+- **Instructores**: Ejemplos listos para usar en cursos de testing
+- **Práctica de TDD**: Casos reales para practicar Test Driven Development
 
 ## 📄 Licencia
 

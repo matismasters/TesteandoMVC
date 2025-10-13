@@ -1,0 +1,53 @@
+@{
+    ViewData["Title"] = "Demo Test Doubles";
+}
+
+<div class="text-center">
+    <h1 class="display-4">🧪 Demo de Test Doubles</h1>
+    <p class="mb-4">Ejemplo simple con un solo servicio</p>
+    
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Resultados del Demo (Input: "@ViewBag.Input")</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><span class="badge bg-secondary">DUMMY</span> Texto Procesado:</h6>
+                            <p>@ViewBag.Resultado.TextoProcesado</p>
+                            
+                            <h6><span class="badge bg-info">STUB</span> Descuentos:</h6>
+                            <p>VIP: @ViewBag.Resultado.DescuentoVIP.ToString("P")</p>
+                            <p>Regular: @ViewBag.Resultado.DescuentoRegular.ToString("P")</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><span class="badge bg-warning text-dark">FAKE</span> Dato Guardado:</h6>
+                            <p>@ViewBag.Resultado.DatoGuardado</p>
+                            
+                            <h6><span class="badge bg-success">SPY</span> Validación:</h6>
+                            <p>@(ViewBag.Resultado.ValidacionExitosa ? "✅ Exitosa" : "❌ Fallida")</p>
+                        </div>
+                    </div>
+                    <div class="alert alert-primary mt-3">
+                        <strong><span class="badge bg-danger">MOCK</span></strong> 
+                        Notificación enviada (verificar en tests)
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <h6>Probar con diferente input:</h6>
+                <form method="get" class="d-inline-flex gap-2">
+                    <input type="text" name="input" class="form-control" placeholder="Ingresa texto..." value="@ViewBag.Input">
+                    <button type="submit" class="btn btn-primary">Ejecutar</button>
+                </form>
+            </div>
+            
+            <div class="mt-4">
+                <a href="/" class="btn btn-secondary">Volver al Inicio</a>
+            </div>
+        </div>
+    </div>
+</div>

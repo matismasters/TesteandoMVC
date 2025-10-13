@@ -137,7 +137,6 @@ namespace TesteandoMVC.Tests
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             var content = await response.Content.ReadAsStringAsync();
-            Console.WriteLine(content);
             Assert.Contains("¡Bienvenido! Has iniciado sesión correctamente.", content);
         }
     }

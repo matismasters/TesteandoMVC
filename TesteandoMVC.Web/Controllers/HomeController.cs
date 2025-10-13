@@ -21,6 +21,13 @@ public class HomeController : Controller
         _testDoublesService = testDoublesService;
     }
 
+    [HttpGet]
+    public IActionResult FinDeSemana()
+    {
+        ViewBag.EsFinDeSemana = _simpleService.EsFinDeSemana();
+        return View();
+    }
+
     public IActionResult Index()
     {
         ViewBag.ShowMessage = _simpleService.HoraEsPar();

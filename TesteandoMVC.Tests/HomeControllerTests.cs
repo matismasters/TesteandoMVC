@@ -139,5 +139,34 @@ namespace TesteandoMVC.Tests
             var content = await response.Content.ReadAsStringAsync();
             Assert.Contains("¡Bienvenido! Has iniciado sesión correctamente.", content);
         }
+
+        [Theory]
+        [InlineData("Es fin de semana", true)]
+        [InlineData("No es fin de semana", false)]
+        public async Task Index_DevuelveMensajeCorrectoSegunMetodoEsFinDeSemana(
+            string mensajeEsperado,
+            bool respuestaServicio
+        )
+        {
+            // Arrange
+            var mockService = new Mock<ISimpleService>();
+            mockService.Setup(x => x.EsFinDeSemana()).Returns(respuestaServicio);
+
+            var client = _factory.WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureServices(services =>
+                {
+                    services.AddScoped<ISimpleService>(_ => mockService.Object);
+                });
+            }).CreateClient();
+
+            // Act
+            var response = await client.GetAsync("/Home/FinDeSemana");
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            var content = await response.Content.ReadAsStringAsync();
+            Assert.Contains(mensajeEsperado, content);
+        }
     }
 }

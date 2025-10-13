@@ -9,11 +9,16 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly ISimpleService _simpleService;
+    private readonly ITestDoublesService _testDoublesService;
 
-    public HomeController(ILogger<HomeController> logger, ISimpleService simpleService)
+    public HomeController(
+        ILogger<HomeController> logger, 
+        ISimpleService simpleService,
+        ITestDoublesService testDoublesService)
     {
         _logger = logger;
         _simpleService = simpleService;
+        _testDoublesService = testDoublesService;
     }
 
     public IActionResult Index()
@@ -49,6 +54,42 @@ public class HomeController : Controller
             "Usuario o contraseña incorrectos. Intenta de nuevo.";
         
         return View("Login");
+    }
+
+    /// <summary>
+    /// Demo simple de Test Doubles usando un solo servicio
+    /// </summary>
+    public IActionResult TestDoubles(string input = "demo")
+    {
+        var resultado = new
+        {
+            // DUMMY: logger se pasa pero no se usa
+            TextoProcesado = _testDoublesService.ProcesarTexto(_logger, input),
+            
+            // STUB: valores predefinidos
+            DescuentoVIP = _testDoublesService.CalcularDescuento("VIP"),
+            DescuentoRegular = _testDoublesService.CalcularDescuento("REGULAR"),
+            
+            // FAKE: operaciones en memoria
+            DatoGuardado = GuardarYObtenerDato(input),
+            
+            // MOCK & SPY: estos se verifican en tests
+            ValidacionExitosa = _testDoublesService.ValidarYProcesar(input)
+        };
+
+        // MOCK: este método se verifica en tests
+        _testDoublesService.EnviarNotificacion($"Demo ejecutado con input: {input}");
+
+        ViewBag.Resultado = resultado;
+        ViewBag.Input = input;
+        return View();
+    }
+
+    private string GuardarYObtenerDato(string input)
+    {
+        var key = "ultimo_input";
+        _testDoublesService.GuardarDato(key, input);
+        return _testDoublesService.ObtenerDato(key);
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

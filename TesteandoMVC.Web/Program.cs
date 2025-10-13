@@ -3,7 +3,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Servicios existentes
 builder.Services.AddScoped<TesteandoMVC.Web.Services.ISimpleService, TesteandoMVC.Web.Services.SimpleService>();
+
+// Nuevo servicio simple para Test Doubles Demo
+builder.Services.AddScoped<TesteandoMVC.Web.Services.ITestDoublesService, TesteandoMVC.Web.Services.TestDoublesService>();
 
 var app = builder.Build();
 
